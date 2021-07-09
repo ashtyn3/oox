@@ -1,7 +1,8 @@
 package txn
 
 type Transaction struct {
-	Out   []string
+	Out   [][]byte
 	Value int
 	Id    string
+	Sig   string
 }

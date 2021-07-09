@@ -37,7 +37,7 @@ func (w *Wallet) InitWallet(name string, options *Options) error {
 	err := enc.Encode(w)
 
 	if err != nil {
-		log.Fatalln("Encode: ", err)
+		log.Fatalln(err)
 	}
 	sha := sha256.Sum256([]byte(options.Password))
 	e, err := crypto.Encrypt(sha[:], content.Bytes())
@@ -46,6 +46,7 @@ func (w *Wallet) InitWallet(name string, options *Options) error {
 		log.Fatalln(err)
 	}
 	os.WriteFile(options.Path+name+".OOX_WALLET", e, 0644)
+
 	return nil
 }
 

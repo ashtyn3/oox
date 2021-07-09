@@ -19,12 +19,12 @@ const (
 	Checksum = 4
 )
 
-func NewKeyPair() KeyPair {
+func NewKeyPair() *KeyPair {
 	c := elliptic.P521()
 	pk, _ := ecdsa.GenerateKey(c, rand.Reader)
 	pub := append(pk.PublicKey.X.Bytes(), pk.PublicKey.Y.Bytes()...)
 
-	return KeyPair{Private: pk, Public: pub}
+	return &KeyPair{Private: pk, Public: pub}
 }
 
 func keyHash(key []byte) []byte {
@@ -45,6 +45,16 @@ func checksum(hash []byte) []byte {
 
 func (kp *KeyPair) Addr() string {
 	hash := keyHash(kp.Public)
+	checkHash := checksum(hash)
+	fullHash := append(hash, checkHash...)
+
+	addr := crypto.B58Enc(fullHash)
+
+	return string(addr)
+}
+
+func Partial(rawKey []byte) string {
+	hash := keyHash(rawKey)
 	checkHash := checksum(hash)
 	fullHash := append(hash, checkHash...)
 

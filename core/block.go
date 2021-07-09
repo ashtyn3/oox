@@ -8,6 +8,7 @@ import (
 
 	"github.com/ashtyn3/oox/core/txn"
 	"github.com/ashtyn3/oox/utils"
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
 type Data struct {
@@ -54,4 +55,10 @@ func CreateBlock(txns []txn.Transaction, prevHash []byte) {
 	block := &Block{Txns: txns, Prev: prevHash, BlockData: D}
 	block.InitHash()
 
+}
+
+func Append() {
+	db, _ := leveldb.OpenFile("./OOX_CHAIN/b.OOX_DB", nil)
+
+	defer db.Close()
 }

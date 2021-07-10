@@ -5,10 +5,10 @@ import (
 	"crypto/sha256"
 	"encoding/gob"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/ashtyn3/oox/core/txn"
 	"github.com/ashtyn3/oox/utils"
-	"github.com/syndtr/goleveldb/leveldb"
 )
 
 type Data struct {
@@ -57,8 +57,22 @@ func CreateBlock(txns []txn.Transaction, prevHash []byte) {
 
 }
 
-func Append() {
-	db, _ := leveldb.OpenFile("./OOX_CHAIN/b.OOX_DB", nil)
+func (b *Block) Bytes() EncodedBlock {
+	B := bytes.Buffer{}
+	e := gob.NewEncoder(&B)
+	err := e.Encode(b)
+	if err != nil {
+		fmt.Println(`failed gob Encode`, err)
+	}
+	return EncodedBlock(B.Bytes())
+}
 
-	defer db.Close()
+type EncodedBlock []byte
+
+func (e *EncodedBlock) Block() *Block {
+	b := Block{}
+	dec := gob.NewDecoder(bytes.NewBuffer(*e))
+	dec.Decode(&b)
+
+	return &b
 }
